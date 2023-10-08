@@ -17,7 +17,8 @@ const tiposMap: { [key: string]: tipos } = {
 //Interface das despesas pessoais
 interface Despesas {
 
-    categoria: tipos; // "importação" de tipos para a interface de despesa para facilitar na criação da lista de despesas
+    // "importação" de ( tipos ) para a interface de despesa para facilitar na criação da lista de despesas
+    categoria: tipos; 
     descricao: string;
     valor: number;
     date: string;
@@ -72,18 +73,18 @@ function validacao(tipoSelecionado: string, descricao: string, valor: number, va
         } else if (valorDate == "") {
             alert("Voce deve informar uma data completa!");
         };
-
+        
     };
 
 };
 
-//Lista de despesas cadastradas
+//Variável onde a lista de despesas será cadastrada 
 const listaDespesas: Despesas[] = []
 
 //adciona as informacoes ao registro
 function adicionarAoRegistro(tipo: string, descricao: string, valor: number, date: string) {
-
-
+    
+    
     //Criação do objeto de depesas com os dados que serão fornecidos pelo usuário
     const novaDespesa: Despesas = {
         categoria: tiposMap[tipo],
@@ -91,37 +92,44 @@ function adicionarAoRegistro(tipo: string, descricao: string, valor: number, dat
         valor,
         date,
     };
-
+    
     //Adiciona a nova despesa a lista de despesas
     listaDespesas.push(novaDespesa);
 
+    //Armazenando o objeto dentro do LocalStorage
+    localStorage.setItem("novaDespesa", JSON.stringify(novaDespesa))
+    
     //limpa os campos informados
     let descricaoHTML: HTMLInputElement = document.getElementById("descricao") as HTMLInputElement;
     descricaoHTML.value = '';
-
+    
     let valorHTML = document.getElementById("valor") as HTMLInputElement;
     valorHTML.value = '';
-
+    
     let inputDateElement: HTMLInputElement = document.getElementById("data") as HTMLInputElement;
     inputDateElement.value = '';
-
-
+    
+    
     //exibi no console as informacoes, logo mais guarda no registro em uma lista
     console.log(`tipo: ${tipo}, Descrição: ${descricao}, valor: ${valor}, data: ${date}`);
     alert(`tipo: ${tipo}, Descrição: ${descricao}, valor: ${valor}, data: ${date}`);
+    exibirDespesasHTML();
 
-exibirDespesas();
 
 };
 
 // Função para exibir as depesas cadastradas
-function exibirDespesas() {
-    const registoDespesas: HTMLElement = document.getElementById("registro") as HTMLElement;
+function exibirDespesasHTML() {
+    //Faz a busca do elemento "registro" contido no HTML do projeto
+    const registoDespesas: HTMLElement = document.querySelector("#registro") as HTMLElement;
+    
 
+    //Limpa o conteúdo anterior
     registoDespesas.innerHTML = "";
 
+    //Adiciona as informações aos campos
     listaDespesas.forEach((despesa, index) => {
-        const divDespesa = document.createElement('div class = "registro-de-despesas"');
+        const divDespesa = document.createElement('div');
         divDespesa.innerHTML = `
         <h4>Despesa ${index + 1}</h4>
         <p>Categoria: ${despesa.categoria}</p>
@@ -136,3 +144,38 @@ function exibirDespesas() {
 
 
 }
+
+
+//Função para Recuperar as despesas e exibi-las em HTML
+function recuperarDespesas(){
+    //Busca as listas guardadas no localStorage para fazer sua recuperação 
+  const despesasRecuperadas = JSON.parse(localStorage.getItem("listaDespesas") || '[]');
+
+
+  //IF para passando o .lenght para automatizar a recuperação onde se caso não ouver lista ele passará para o alert informativo
+  if(despesasRecuperadas.lenght > 0){
+    const divDespesaRecuperada = document.createElement('div');
+
+    despesasRecuperadas.forEach((despesa: Despesas, index: number) =>{
+
+        divDespesaRecuperada.innerHTML = `
+        <h4>Despesa ${index + 1}</h4>
+        <p>Categoria: ${despesa.categoria}</p>
+        <p>Descrição: ${despesa.descricao}</p>
+        <p>Valor: R$ ${despesa.valor.toFixed(2)}</p>
+        <p>Data: ${despesa.date}</p>
+
+        `;
+
+        divDespesaRecuperada.appendChild(despesasRecuperadas);
+
+    });
+
+
+  }else{
+    alert("Nenhuma despesa encontrada no Historico temporário")
+  }
+
+}
+//Chama a função para recuperar e exibir as despesas
+recuperarDespesas();
