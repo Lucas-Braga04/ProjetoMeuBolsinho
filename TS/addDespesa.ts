@@ -84,7 +84,6 @@ const listaDespesas: Despesas[] = []
 //adciona as informacoes ao registro
 function adicionarAoRegistro(tipo: string, descricao: string, valor: number, date: string) {
     
-    
     //Criação do objeto de depesas com os dados que serão fornecidos pelo usuário
     const novaDespesa: Despesas = {
         categoria: tiposMap[tipo],
@@ -97,7 +96,7 @@ function adicionarAoRegistro(tipo: string, descricao: string, valor: number, dat
     listaDespesas.push(novaDespesa);
 
     //Armazenando o objeto dentro do LocalStorage
-    localStorage.setItem("novaDespesa", JSON.stringify(novaDespesa))
+    localStorage.setItem("listaDespesas", JSON.stringify(listaDespesas))
     
     //limpa os campos informados
     let descricaoHTML: HTMLInputElement = document.getElementById("descricao") as HTMLInputElement;
@@ -149,33 +148,34 @@ function exibirDespesasHTML() {
 //Função para Recuperar as despesas e exibi-las em HTML
 function recuperarDespesas(){
     //Busca as listas guardadas no localStorage para fazer sua recuperação 
-  const despesasRecuperadas = JSON.parse(localStorage.getItem("listaDespesas") || '[]');
+    const recuperacaoDeDespesas = JSON.parse(localStorage.getItem("listaDespesas") || ('[]'));
+
+    //Buscando elemtendo HTML ao qual será atribuido a exibição das despesas recuperadas    
+    const historicoDasDespesas = document.getElementById("historico")!;
+    historicoDasDespesas.innerHTML = '';
+    //IF verificando se há despesas para exibir
+
+    if (recuperacaoDeDespesas.lenght > 0){ 
+        recuperacaoDeDespesas.forEach((despesa: Despesas, index: number) =>{
+            const divDespesaRecuperada = document.createElement('div');
+            divDespesaRecuperada.innerHTML = `
+                <h4>Despesa ${index + 1}</h4>
+                <p>Categoria: ${despesa.categoria}</p>
+                <p>Descrição: ${despesa.descricao}</p>
+                <p>Valor: R$ ${despesa.valor.toFixed(2)}</p>
+                <p>Data: ${despesa.date}</p>
+
+            `;
+
+            historicoDasDespesas.appendChild(divDespesaRecuperada);
+
+        });
 
 
-  //IF para passando o .lenght para automatizar a recuperação onde se caso não ouver lista ele passará para o alert informativo
-  if(despesasRecuperadas.lenght > 0){
-    const divDespesaRecuperada = document.createElement('div');
-
-    despesasRecuperadas.forEach((despesa: Despesas, index: number) =>{
-
-        divDespesaRecuperada.innerHTML = `
-        <h4>Despesa ${index + 1}</h4>
-        <p>Categoria: ${despesa.categoria}</p>
-        <p>Descrição: ${despesa.descricao}</p>
-        <p>Valor: R$ ${despesa.valor.toFixed(2)}</p>
-        <p>Data: ${despesa.date}</p>
-
-        `;
-
-        divDespesaRecuperada.appendChild(despesasRecuperadas);
-
-    });
-
-
-  }else{
-    alert("Nenhuma despesa encontrada no Historico temporário")
-  }
+    }else{
+        alert("Nenhuma despesa encontrada no Historico temporário")
+    }
 
 }
 //Chama a função para recuperar e exibir as despesas
-recuperarDespesas();
+    recuperarDespesas();

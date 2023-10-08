@@ -74,7 +74,7 @@ function adicionarAoRegistro(tipo, descricao, valor, date) {
     //Adiciona a nova despesa a lista de despesas
     listaDespesas.push(novaDespesa);
     //Armazenando o objeto dentro do LocalStorage
-    localStorage.setItem("novaDespesa", JSON.stringify(novaDespesa));
+    localStorage.setItem("listaDespesas", JSON.stringify(listaDespesas));
     //limpa os campos informados
     let descricaoHTML = document.getElementById("descricao");
     descricaoHTML.value = '';
@@ -112,20 +112,23 @@ function exibirDespesasHTML() {
 //Função para Recuperar as despesas e exibi-las em HTML
 function recuperarDespesas() {
     //Busca as listas guardadas no localStorage para fazer sua recuperação 
-    const despesasRecuperadas = JSON.parse(localStorage.getItem("listaDespesas") || '[]');
-    //IF para passando o .lenght para automatizar a recuperação onde se caso não ouver lista ele passará para o alert informativo
-    if (despesasRecuperadas.lenght > 0) {
-        const divDespesaRecuperada = document.createElement('div');
-        despesasRecuperadas.forEach((despesa, index) => {
+    const recuperacaoDeDespesas = JSON.parse(localStorage.getItem("listaDespesas") || ('[]'));
+    //Buscando elemtendo HTML ao qual será atribuido a exibição das despesas recuperadas    
+    const historicoDasDespesas = document.getElementById("historico");
+    historicoDasDespesas.innerHTML = '';
+    //IF verificando se há despesas para exibir
+    if (recuperacaoDeDespesas.lenght > 0) {
+        recuperacaoDeDespesas.forEach((despesa, index) => {
+            const divDespesaRecuperada = document.createElement('div');
             divDespesaRecuperada.innerHTML = `
-        <h4>Despesa ${index + 1}</h4>
-        <p>Categoria: ${despesa.categoria}</p>
-        <p>Descrição: ${despesa.descricao}</p>
-        <p>Valor: R$ ${despesa.valor.toFixed(2)}</p>
-        <p>Data: ${despesa.date}</p>
+                <h4>Despesa ${index + 1}</h4>
+                <p>Categoria: ${despesa.categoria}</p>
+                <p>Descrição: ${despesa.descricao}</p>
+                <p>Valor: R$ ${despesa.valor.toFixed(2)}</p>
+                <p>Data: ${despesa.date}</p>
 
-        `;
-            divDespesaRecuperada.appendChild(despesasRecuperadas);
+            `;
+            historicoDasDespesas.appendChild(divDespesaRecuperada);
         });
     }
     else {
