@@ -121,6 +121,9 @@ function recuperarDespesas() {
     //Buscando elemtendo HTML ao qual será atribuido a exibição das despesas recuperadas    
     const historicoDasDespesas = document.getElementById("historico");
     historicoDasDespesas.innerHTML = '';
+    historicoDasDespesas.addEventListener("click", function () {
+        recuperarDespesas();
+    });
     //IF verificando se há despesas para exibir
     if (recuperacaoDeDespesas.lenght > 0) {
         recuperacaoDeDespesas.forEach((despesa, index) => {
@@ -137,7 +140,7 @@ function recuperarDespesas() {
         });
     }
     else {
-        alert("Nenhuma despesa encontrada no Historico temporário");
+        alert("Sua lista foi gerada");
     }
     console.log(recuperacaoDeDespesas);
 }
