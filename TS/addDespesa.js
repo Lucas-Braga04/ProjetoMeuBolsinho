@@ -1,4 +1,5 @@
 "use strict";
+var _a;
 ;
 // Mapeamento do enum tipos.
 const tiposMap = {
@@ -61,7 +62,7 @@ function validacao(tipoSelecionado, descricao, valor, valorDate) {
 }
 ;
 //Variável onde a lista de despesas será cadastrada 
-const listaDespesas = [];
+let listaDespesas = [];
 //adciona as informacoes ao registro
 function adicionarAoRegistro(tipo, descricao, valor, date) {
     //Criação do objeto de depesas com os dados que serão fornecidos pelo usuário
@@ -71,9 +72,13 @@ function adicionarAoRegistro(tipo, descricao, valor, date) {
         valor,
         date,
     };
+    let listaSalva = localStorage.getItem("listaDespesas");
+    if (listaSalva) {
+        listaDespesas = JSON.parse(listaSalva);
+    }
     //Adiciona a nova despesa a lista de despesas
     listaDespesas.push(novaDespesa);
-    //Armazenando o objeto dentro do LocalStorage
+    //Salvando a lista dentro do LocalStorage
     localStorage.setItem("listaDespesas", JSON.stringify(listaDespesas));
     //limpa os campos informados
     let descricaoHTML = document.getElementById("descricao");
@@ -134,6 +139,9 @@ function recuperarDespesas() {
     else {
         alert("Nenhuma despesa encontrada no Historico temporário");
     }
+    console.log(recuperacaoDeDespesas);
 }
 //Chama a função para recuperar e exibir as despesas
-recuperarDespesas();
+(_a = document.getElementById("botaRecuperarDespesas")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", function () {
+    recuperarDespesas();
+});

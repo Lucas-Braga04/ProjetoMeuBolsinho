@@ -79,8 +79,7 @@ function validacao(tipoSelecionado: string, descricao: string, valor: number, va
 };
 
 //Variável onde a lista de despesas será cadastrada 
-const listaDespesas: Despesas[] = []
-
+let listaDespesas: Despesas[] = [];
 //adciona as informacoes ao registro
 function adicionarAoRegistro(tipo: string, descricao: string, valor: number, date: string) {
     
@@ -91,13 +90,21 @@ function adicionarAoRegistro(tipo: string, descricao: string, valor: number, dat
         valor,
         date,
     };
+
+    let listaSalva = localStorage.getItem("listaDespesas")
+  
     
+    if(listaSalva){
+        listaDespesas = JSON.parse(listaSalva)
+    }
+
+
     //Adiciona a nova despesa a lista de despesas
     listaDespesas.push(novaDespesa);
 
-    //Armazenando o objeto dentro do LocalStorage
-    localStorage.setItem("listaDespesas", JSON.stringify(listaDespesas))
-    
+    //Salvando a lista dentro do LocalStorage
+    localStorage.setItem("listaDespesas", JSON.stringify(listaDespesas));
+
     //limpa os campos informados
     let descricaoHTML: HTMLInputElement = document.getElementById("descricao") as HTMLInputElement;
     descricaoHTML.value = '';
@@ -122,7 +129,6 @@ function exibirDespesasHTML() {
     //Faz a busca do elemento "registro" contido no HTML do projeto
     const registoDespesas: HTMLElement = document.querySelector("#registro") as HTMLElement;
     
-
     //Limpa o conteúdo anterior
     registoDespesas.innerHTML = "";
 
@@ -148,8 +154,8 @@ function exibirDespesasHTML() {
 //Função para Recuperar as despesas e exibi-las em HTML
 function recuperarDespesas(){
     //Busca as listas guardadas no localStorage para fazer sua recuperação 
-    const recuperacaoDeDespesas = JSON.parse(localStorage.getItem("listaDespesas") || ('[]'));
-
+    const recuperacaoDeDespesas = JSON.parse(localStorage.getItem("listaDespesas") || ('[]'))!;
+   
     //Buscando elemtendo HTML ao qual será atribuido a exibição das despesas recuperadas    
     const historicoDasDespesas = document.getElementById("historico")!;
     historicoDasDespesas.innerHTML = '';
@@ -168,14 +174,16 @@ function recuperarDespesas(){
             `;
 
             historicoDasDespesas.appendChild(divDespesaRecuperada);
-
         });
-
-
+        
+        
     }else{
         alert("Nenhuma despesa encontrada no Historico temporário")
     }
-
+    
+    console.log(recuperacaoDeDespesas);
 }
 //Chama a função para recuperar e exibir as despesas
-    recuperarDespesas();
+document.getElementById("botaRecuperarDespesas")?.addEventListener("click", function(){   
+recuperarDespesas();
+});
