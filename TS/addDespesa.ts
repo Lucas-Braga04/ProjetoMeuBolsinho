@@ -14,6 +14,16 @@ const tiposMap: { [key: string]: tipos } = {
     "Material didático": tipos.Material_didático,
 };
 
+//Interface das despesas pessoais
+interface Despesas {
+
+    categoria: tipos; // "importação" de tipos para a interface de despesa para facilitar na criação da lista de despesas
+    descricao: string;
+    valor: number;
+    date: string;
+}
+
+
 //Funcao para cadastras as despesas.
 function cadastrarDespesas() {
     // Obtenha uma coleção de todos os inputs do tipo rádio com o mesmo name
@@ -67,8 +77,24 @@ function validacao(tipoSelecionado: string, descricao: string, valor: number, va
 
 };
 
+//Lista de despesas cadastradas
+const listaDespesas: Despesas[] = []
+
 //adciona as informacoes ao registro
 function adicionarAoRegistro(tipo: string, descricao: string, valor: number, date: string) {
+
+
+    //Criação do objeto de depesas com os dados que serão fornecidos pelo usuário
+    const novaDespesa: Despesas = {
+        categoria: tiposMap[tipo],
+        descricao,
+        valor,
+        date,
+    };
+
+    //Adiciona a nova despesa a lista de despesas
+    listaDespesas.push(novaDespesa);
+
     //limpa os campos informados
     let descricaoHTML: HTMLInputElement = document.getElementById("descricao") as HTMLInputElement;
     descricaoHTML.value = '';
@@ -83,4 +109,30 @@ function adicionarAoRegistro(tipo: string, descricao: string, valor: number, dat
     //exibi no console as informacoes, logo mais guarda no registro em uma lista
     console.log(`tipo: ${tipo}, Descrição: ${descricao}, valor: ${valor}, data: ${date}`);
     alert(`tipo: ${tipo}, Descrição: ${descricao}, valor: ${valor}, data: ${date}`);
+
+exibirDespesas();
+
 };
+
+// Função para exibir as depesas cadastradas
+function exibirDespesas() {
+    const registoDespesas: HTMLElement = document.getElementById("registro") as HTMLElement;
+
+    registoDespesas.innerHTML = "";
+
+    listaDespesas.forEach((despesa, index) => {
+        const divDespesa = document.createElement('div class = "registro-de-despesas"');
+        divDespesa.innerHTML = `
+        <h4>Despesa ${index + 1}</h4>
+        <p>Categoria: ${despesa.categoria}</p>
+        <p>Descrição: ${despesa.descricao}</p>
+        <p>Valor: R$ ${despesa.valor.toFixed(2)}</p>
+        <p>Data: ${despesa.date}</p>
+        
+        
+        `;
+        registoDespesas.appendChild(divDespesa);
+    });
+
+
+}
